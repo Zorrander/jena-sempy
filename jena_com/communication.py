@@ -7,7 +7,7 @@ class Store:
         self.dataset = dataset
 
 
-    def request(self):
+    def select_all(self):
         request = """
         SELECT ?subject ?predicate ?object
         WHERE {
@@ -15,8 +15,6 @@ class Store:
         }
         LIMIT 25
         """
-        print("Sending request to: {}/{}/query".format(self.address, self.dataset))
-        print("request = {}".format(request))
         response = requests.post("{}/{}/query".format(self.address, self.dataset), data={'query': request})
         return response.json()
 
