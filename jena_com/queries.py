@@ -3,11 +3,11 @@ Define a set of queries to retrieve information from an RDF Triple store.
 """
 
 
-def add_limit(self, query, limit=25):
-    return " LIMIT " + limit
+def add_limit(query, limit=25):
+    return " LIMIT " + str(limit)
 
 ''' Select every triple in the store '''
-def select_all(self):
+def select_all():
     query = """
     SELECT ?subject ?predicate ?object
     WHERE {

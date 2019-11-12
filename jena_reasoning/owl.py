@@ -1,8 +1,11 @@
-from jena_com import Query
+import jena_com.queries as qry
+from jena_com.communication import Server
 
 class Knowledge:
 
     def __init__(self):
-        self.store = Request()
+        self.store = Server()
 
-    def add_limit(self, query, limit=25):
+    def fetch_all(self):
+        query = qry.select_all()
+        return self.store.send(query)['results']['bindings']

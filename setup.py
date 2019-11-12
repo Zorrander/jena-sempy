@@ -8,10 +8,13 @@ setup(
     author_email='alexandre.angleraud@tuni.fi',
     download_url='https://github.com/Zorrander/jena-sempy/archive/v_0.1.tar.gz',
     license='New BSD License',
+    test_suite="tests",
     install_requires=[
-     'requests'
+     'requests',
+     'rdflib'
     ],
     packages=[
-     'jena_com'
+     'jena_com',
+     'jena_reasoning'
     ]
 )

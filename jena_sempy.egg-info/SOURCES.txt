@@ -3,6 +3,11 @@ setup.cfg
 setup.py
 jena_com/__init__.py
 jena_com/communication.py
+jena_com/queries.py
+jena_reasoning/__init__.py
+jena_reasoning/owl.py
+jena_reasoning/reasoner.py
+jena_reasoning/semantic_reasoner.py
 jena_sempy.egg-info/PKG-INFO
 jena_sempy.egg-info/SOURCES.txt
 jena_sempy.egg-info/dependency_links.txt
