@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='jena_sempy',
-    version='0.1',
+    version='0.2',
     description='Handle communication between python and Jena triple store',
     author='Alexandre Angleraud',
     author_email='alexandre.angleraud@tuni.fi',
