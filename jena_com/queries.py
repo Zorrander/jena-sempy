@@ -16,3 +16,17 @@ def select_all():
     """
     query += add_limit(query)
     return query
+
+def select_skill(action, target):
+    query = """
+        SELECT ?skill
+        WHERE {
+            ?entity rdfs:subClassOf      cogtuni:Utterance ;
+                    cogtuni:isInvokedBy  ?sl1;
+                    cogtuni:isFollowedBy ?sl2;
+                    cogtuni:activates    ?skill.
+            ?sl1 cogtuni:hasValue """+ "'" + action + "'" + """.
+            ?sl2 cogtuni:hasValue """ + "'" + target + "'" + """.
+        }
+        """
+    return query
