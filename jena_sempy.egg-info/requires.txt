@@ -1,2 +1,2 @@
-rdflib
 requests
+rdflib
