@@ -22,6 +22,11 @@ class Knowledge:
 
     def fetch_all(self):
         query = qry.select_all()
-        #for row in self.g.query(query):
-        #    print(row)
         return self.query(query)
+
+    def create(self, triple):
+        self.g.add( (triple.subject, triple.predicate, triple.object) )
+
+    def read(self, subject):
+        gen = self.g.predicate_objects(subject)
+        return [ pred, obj for pred, obj in gen ]
