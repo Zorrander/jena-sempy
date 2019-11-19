@@ -12,6 +12,12 @@ class Knowledge:
         self.g = Graph()
         self.g.parse("http://"+ip+":"+port+"/Panda/get", format=format)
 
+    def process_uri(self, uri):
+        uri_py = uri.toPython()
+        if "#" in uri_py:
+            uri_py = uri_py.split("#")[1]
+        return uri_py
+
     def query(self, query):
         SPARQLResult = self.g.query(query, initNs=namespaces)
         rows = [x for x in SPARQLResult]
@@ -28,5 +34,7 @@ class Knowledge:
         self.g.add( (triple.subject, triple.predicate, triple.object) )
 
     def read(self, subject):
+        if not "#" in subject:
+            subject = cogtuni[subject]
         gen = self.g.predicate_objects(subject)
-        return [ pred, obj for pred, obj in gen ]
+        return [ (self.process_uri(pred), self.process_uri(obj)) for pred, obj in gen ]

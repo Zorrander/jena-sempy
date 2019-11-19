@@ -1,2 +1,0 @@
-jena_com
-jena_reasoning
