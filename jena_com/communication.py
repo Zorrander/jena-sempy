@@ -19,7 +19,7 @@ class Server:
             uri_py = uri.toPython()
         if "#" in uri_py:
             uri_py = uri_py.split("#")[1]
-        return uri_py
+        return uri_py.encode('ascii', 'ignore')
 
     def process_result(self, result):
         rows = [x for x in result]
