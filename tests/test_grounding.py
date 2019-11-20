@@ -1,11 +1,11 @@
 from unittest import TestCase
-from jena_reasoning.owl import Knowledge
+from jena_com.communication import Server
 import jena_com.queries as qry
 
 class TestGrounding(TestCase):
 
     def test_understand_request(self):
-        reasoner = Knowledge()
+        reasoner = Server()
         test = reasoner.query(qry.select_skill("Make", "cranfield"))
         self.assertTrue(test == "Cranfield_Assembly")
 

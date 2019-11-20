@@ -15,7 +15,7 @@ class Server:
 
     def process_uri(self, uri):
         uri_py = uri
-        if isinstance(a, rdflib.term.URIRef):
+        if isinstance(uri_py, rdflib.term.URIRef):
             uri_py = uri.toPython()
         if "#" in uri_py:
             uri_py = uri_py.split("#")[1]
