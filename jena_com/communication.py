@@ -36,8 +36,8 @@ class Server:
         query = qry.select_all()
         return self.query(query)
 
-    def create(self, triple):
-        self.g.add( (triple.subject, triple.predicate, triple.object) )
+    def create(self, subject, predicate, object):
+        self.g.add( (subject, predicate, object) )
 
     def read(self, subject):
         if not "#" in subject:
