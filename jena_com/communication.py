@@ -1,5 +1,5 @@
 import rdflib
-from rdflib import Namespace
+from rdflib import Namespace, URIRef
 from rdflib.graph import Graph
 import jena_com.queries as qry
 
@@ -37,7 +37,7 @@ class Server:
         return self.query(query)
 
     def create(self, subject, predicate, object):
-        self.g.add( (subject, predicate, object) )
+        self.g.add( (URIRef(subject), URIRef(predicate), URIRef()) )
 
     def read(self, subject):
         if not "#" in subject:
