@@ -2,6 +2,7 @@ import rdflib
 from rdflib import Namespace, URIRef
 from rdflib.graph import Graph
 import jena_com.queries as qry
+from os.path import expanduser
 
 cogtuni = Namespace("http://cognitive.robotics.tut#")
 rdfs    = Namespace("http://www.w3.org/2000/01/rdf-schema#")
@@ -37,7 +38,10 @@ class Server:
         return self.query(query)
 
     def create(self, subject, predicate, object):
-        self.g.add( (URIRef(subject), URIRef(predicate), URIRef()) )
+        subject   =  URIRef(subject) if not isinstance(subject, rdflib.term.URIRef) else subject
+        predicate =  URIRef(predicate) if not isinstance(predicate, rdflib.term.URIRef) else predicate
+        object    =  URIRef(object) if not isinstance(object, rdflib.term.URIRef) else object
+        self.g.add( (subject, predicate, object) )
 
     def read(self, subject):
         if not "#" in subject:
@@ -57,3 +61,9 @@ class Server:
                 if found:
                     break
         return found
+
+    def save(self):
+        filename = raw_input("Enter a file name to save the ontology: ")
+        filename = expanduser("~")+"/"+filename+".owl"
+        file = open(filename, "w+")
+        file.write(self.g.serialize(format='xml'))

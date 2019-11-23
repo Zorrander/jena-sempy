@@ -27,6 +27,8 @@ class Knowledge:
                         key_ns = Namespace(key_ns+"#") if key_ns else self.cogtuni_ns
                         value_ns = Namespace(value_ns+"#") if value_ns else self.cogtuni_ns
                         list_triples.append( (self.cogtuni_ns[object_name], key_ns[key], value_ns[value]) )
+        for triple in list_triples:
+            self.server.create(triple[0], triple[1], triple[2])
         return list_triples
 
     def deduce_step(self):
