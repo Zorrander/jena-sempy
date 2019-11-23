@@ -43,6 +43,17 @@ class Knowledge:
         ''' Given a list of parts and links, identifies within step the different phases of the assembly '''
         pass
 
-    def assembly_by_disassembly(self):
+    def assembly_by_disassembly(self, jsdata):
         ''' Given a list of parts and links, generates a complete XML file enabling planning later on. '''
-        pass
+        print(jsdata)
+        # Transform children relationships into undirectional links
+
+        # Each object has:
+        # - properties
+        # - links/constraints
+
+        # Group them into parallel sets. The planner needs a list of steps and a list of constraints.
+          
+        # Generate ontology file with all the info
+
+        # The file can later on be added to the ontology server and be performed
