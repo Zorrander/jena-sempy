@@ -44,3 +44,16 @@ class Server:
             subject = cogtuni[subject]
         gen = self.g.predicate_objects(subject)
         return [ (self.process_uri(pred), self.process_uri(obj)) for pred, obj in gen ]
+
+    def find_namespace(self, entity):
+        found = False
+        for triple in self.fetch_all():
+            for uri_ref in triple:
+                if isinstance(uri_ref, rdflib.term.URIRef) and "#" in uri_ref:
+                    uri_py = uri_ref.toPython()
+                    if uri_py.split("#")[1] == entity:
+                        found = uri_py.split("#")[0]
+                        break
+                if found:
+                    break
+        return found

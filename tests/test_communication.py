@@ -8,10 +8,10 @@ cogtuni = Namespace("http://cognitive.robotics.tut#")
 
 class TestCommunication(TestCase):
 
-    def test_is_communicating(self):
+    def test_find_namespace(self):
         reasoner = Server()
-        test = reasoner.fetch_all()
-        self.assertTrue(len(test) == 25)
+        test = reasoner.find_namespace("FrankaDictionary")
+        self.assertTrue(test == "http://cognitive.robotics.tut")
 
     def test_find_subject(self):
         reasoner = Server()

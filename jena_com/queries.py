@@ -14,7 +14,7 @@ def select_all():
         ?subject ?predicate ?object
     }
     """
-    query += add_limit(query)
+    #query += add_limit(query)
     return query
 
 def select_skill(action, target):
