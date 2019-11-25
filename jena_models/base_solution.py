@@ -4,7 +4,7 @@ class BaseSolution(SimpleTemporalNetwork):
     def __init__(self):
         super(BaseSolution, self).__init__()
 
-    def _relax_network(self, stn):
+    def relax_network(self, stn):
         """ Relax the temporal constraints.
 
         The disjunctive constraints can be combined by taking only the lower and upper bounds.
@@ -16,7 +16,7 @@ class BaseSolution(SimpleTemporalNetwork):
                 robot_expectations = weight[1]
                 self.set_relation(u, v, 'temporal_constraint', (min(human_expectations[0], robot_expectations[0]), max(human_expectations[1], robot_expectations[1])))
 
-    def _transform_dispatchable_graph(self, method="apsp"):
+    def transform_dispatchable_graph(self, method="apsp"):
         """ Compute the Base Solution.
 
         The Base Solution consists in a dispatchable graph.
@@ -29,10 +29,10 @@ class BaseSolution(SimpleTemporalNetwork):
             self.print_graph()
             nx.write_graphml(self._graph, "dist.graphml")
             print("Calculating the APSP form of the graph:")
-            self._all_pairs_shortest_paths()
+            self.all_pairs_shortest_paths()
             print("Writing resulting graph into apsp.graphml")
             nx.write_graphml(self._graph, "apsp.graphml")
             print("Removing dominated edges:")
-            self._prune_redundant_constraints()
+            self.prune_redundant_constraints()
         elif method == "chordal":
             pass

@@ -24,9 +24,9 @@ class SetOfDifferences(object):
         planning_policy.evaluate(steps, base_solution)
         print("Creating the set of differences:")
         for p in tqdm(range(0, len(planning_policy.valid_assignments))):
-            self.valid_assignments.append(self._create_component_solution(planning_policy.valid_assignments[p], base_solution))
+            self.valid_assignments.append(self.create_component_solution(planning_policy.valid_assignments[p], base_solution))
 
-    def _create_component_solution(self, policy, stn):
+    def create_component_solution(self, policy, stn):
         """ Create a task assignment.
 
         The function transforms a policy into a task assignment.

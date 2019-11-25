@@ -6,7 +6,7 @@ class SimpleTemporalNetwork(object):
         self._graph = nx.DiGraph()
         self.synch_table = {}
 
-    def _model_temporal_problem(self, skill):
+    def model_temporal_problem(self, skill):
         """ Converts the problem into an STNU
 
         Translate the lists of steps and their constraints into timepoints and links between them.
@@ -108,7 +108,7 @@ class SimpleTemporalNetwork(object):
             self.set_relation(v, u, 'temporal_constraint', -lower_bound)
             new_edges.append((v, u, -lower_bound))
 
-    def _all_pairs_shortest_paths(self):
+    def all_pairs_shortest_paths(self):
         """ Compute all pairs shortest paths with Floyd-Warshall algorithm
 
         Computes a fully-connected network, with binary constraints relating each pair of events.
@@ -119,7 +119,7 @@ class SimpleTemporalNetwork(object):
                 if not(node_a==node_b or (node_a, node_b) in list(self._graph.edges)):
                     self.set_relation(node_a, node_b, 'temporal_constraint', distance[node_a][node_b])
 
-    def _prune_redundant_constraints(self):
+    def prune_redundant_constraints(self):
         """ Remove dominated edges.
 
         Remove dominated edges to make STN dispatchable.
@@ -148,7 +148,7 @@ class SimpleTemporalNetwork(object):
         print(list(self._graph.nodes(data=True)))
         print(list(self._graph.edges(data=True)))
 
-    def _find_first_task(self, step):
+    def find_first_task(self, step):
         """ Identify the first task within a step """
         for u, v in self._graph.edges():
             if (not (u == "Start")) and self._graph.nodes(data='step')[u] == step:
@@ -159,7 +159,7 @@ class SimpleTemporalNetwork(object):
                 if not has_predecessor:
                     return u
 
-    def _find_last_task(self, step):
+    def find_last_task(self, step):
         """ Identify the last task within a step """
         for u, v in self._graph.edges():
             if (not (u == "Start")) and self._graph.nodes(data='step')[v] == step:
