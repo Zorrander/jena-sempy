@@ -1,8 +1,13 @@
 import copy
 import networkx as nx
+from os.path import expanduser
+from networkx.readwrite import json_graph
+import jena_com.queries as qry
+from jena_com.communication import Server
 
 class SimpleTemporalNetwork(object):
     def __init__(self):
+        self.server = Server()
         self._graph = nx.DiGraph()
         self.synch_table = {}
 
@@ -11,6 +16,36 @@ class SimpleTemporalNetwork(object):
 
         Translate the lists of steps and their constraints into timepoints and links between them.
         """
+        # Find steps involved in skill
+        steps = [x[0].toPython() for x in self.server.query(qry.select_steps(skill))]
+        print(steps)
+        for step in steps:
+            tasks = []
+            res = self.server.query(qry.select_previous_state_and_first_task(step))  # Retrieve all their constraints
+            print(res)
+            previous = res[0]
+            if res[1]:
+                first_task = res[1]
+            """
+            res = utils.kb.query(q, initNs=utils.namespaces)
+            result =  [x for x in res]
+            res_row = result[0]
+            first_task = (str(res_row[0].toPython()))
+            if res_row[1]:
+                previous_step = (str(res_row[1].toPython()))
+            """
+            tasks.append(first_task)
+            has_next = True
+            previous = first_task
+            while has_next:
+                next_task = self.server.query(qry.select_next_task(step))
+                if next_task:
+                    tasks.append(next_task[0])
+                    previous = next_task[0]
+                else:
+                    has_next = False
+            print(tasks, previous)
+
         print("Steps >>>")
         for step in steps:
             print("{} >>> {} >>> {}".format(step[0], step[1], step[2]))
@@ -143,6 +178,13 @@ class SimpleTemporalNetwork(object):
         else:
             return False
 
+    def graph_to_json(self):
+        filename = raw_input("Enter a file name to save the plan: ")
+        filename = expanduser("~")+"/"+filename+".owl"
+        d = json_graph.node_link_data(self._graph)  # node-link format to serialize
+        # write json
+        file = open(filename, "w+")
+        json.dump(d, file)
 
     def print_graph(self):
         print(list(self._graph.nodes(data=True)))

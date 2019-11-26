@@ -6,7 +6,7 @@ from os.path import expanduser
 
 cogtuni = Namespace("http://cognitive.robotics.tut#")
 rdfs    = Namespace("http://www.w3.org/2000/01/rdf-schema#")
-namespaces = dict(cogtuni=cogtuni, rdfs=rdfs)
+namespaces = dict(cogtuni=cogtuni, rdfs=rdfs, cogrobtut=cogtuni)
 
 class Server:
 
@@ -24,12 +24,16 @@ class Server:
 
     def process_result(self, result):
         rows = [x for x in result]
+        if len(rows)< 25:
+            print(rows)
         if len(rows)==1:
-            return rows[0][0].toPython().split("#")[1]
+            return rows[0][0].toPython()
+            #  .split("#")[1]
         else:
             return rows
 
     def query(self, query):
+        print("querying: {}".format(query))
         SPARQLResult = self.g.query(query, initNs=namespaces)
         return self.process_result(SPARQLResult)
 

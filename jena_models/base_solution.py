@@ -34,5 +34,6 @@ class BaseSolution(SimpleTemporalNetwork):
             nx.write_graphml(self._graph, "apsp.graphml")
             print("Removing dominated edges:")
             self.prune_redundant_constraints()
+            self.graph_to_json()
         elif method == "chordal":
             pass

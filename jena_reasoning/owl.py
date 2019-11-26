@@ -31,6 +31,9 @@ class Knowledge:
             self.server.create(triple[0], triple[1], triple[2])
         return list_triples
 
+    def retrieve_stp_from_ontology(self, skill_name):
+        ''' Given the name of a skill retrieves the list of steps and constraints associated with it. '''
+
     def deduce_step(self):
         ''' Given a list of parts and links, isolate independant groups of tasks. '''
         pass
@@ -53,7 +56,7 @@ class Knowledge:
         # - links/constraints
 
         # Group them into parallel sets. The planner needs a list of steps and a list of constraints.
-          
+
         # Generate ontology file with all the info
 
         # The file can later on be added to the ontology server and be performed

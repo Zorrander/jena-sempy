@@ -1,13 +1,15 @@
 from unittest import TestCase
-
+import os
 from jena_models.base_solution import BaseSolution
 from jena_models.set_of_differences import SetOfDifferences
 from jena_models.update_rules import dynamic_backpropagation_rule_I, dynamic_backpropagation_rule_II
+
 
 class TestPlanning(TestCase):
 
     def test_model_network(self):
         b_s = BaseSolution()
+        b_s.model_temporal_problem("Cranfield_Assembly")
         self.assertTrue(False)
 
     def test_relax_network(self):
@@ -43,3 +45,10 @@ class TestPlanning(TestCase):
         case_2 = ""
         case_3 = ""
         self.assertTrue(case_1 and case_2 and case_3)
+
+
+    def test_create_plan(self):
+        # Make a plan.
+        # Export it to a file.
+        # Read the file and compare to expected output.
+        pass
