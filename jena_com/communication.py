@@ -24,16 +24,14 @@ class Server:
 
     def process_result(self, result):
         rows = [x for x in result]
-        if len(rows)< 25:
-            print(rows)
         if len(rows)==1:
-            return rows[0][0].toPython()
+            return rows[0]
+            # [0].toPython()
             #  .split("#")[1]
         else:
             return rows
 
     def query(self, query):
-        print("querying: {}".format(query))
         SPARQLResult = self.g.query(query, initNs=namespaces)
         return self.process_result(SPARQLResult)
 

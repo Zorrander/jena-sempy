@@ -31,33 +31,31 @@ def select_skill(action, target):
     """
     return query
 
-def select_steps(skill_name):
+def select_assembly_steps():
     query = """
         SELECT ?s
         WHERE {
-        cogrobtut:""" + skill_name + """ cogrobtut:hasStep ?step .
+        ?step rdf:type cogrobtut:AssembleTask .
         bind( strafter(str(?step), "#") as ?s) . }
     """
     return query
 
-def select_previous_state_and_first_task(step_name):
+def select_links(step_name):
     query = """
-        SELECT ?o ?previousState
+        SELECT ?part
         WHERE {
-        cogrobtut:""" + step_name + """ cogrobtut:consistsIn ?val .
-        OPTIONAL{cogrobtut:""" + step_name + """ cogrobtut:isDoneAfter ?ps. }
-        bind( strafter(str(?ps), "#") as ?previousState)
-        bind( strafter(str(?val), "#") as ?o) .
+        OPTIONAL{cogrobtut:""" + step_name + """ cogrobtut:actsOn ?ps. }
+        bind( strafter(str(?ps), "#") as ?part) .
         }
     """
     return query
 
-def select_next_task(previous):
+def select_type(part):
     query = """
-        SELECT ?second
+        SELECT ?type
         WHERE {
-        OPTIONAL{cogrobtut:""" + previous + """ cogrobtut:doesThen ?o2. }
-        BIND( strafter(str(?o2), "#") as ?second) .
+            cogrobtut:""" + part + """ rdf:type ?t .
+            BIND( strafter(str(?t), "#") as ?type) .
         }
     """
     return query

@@ -12,7 +12,8 @@ setup(
     install_requires=[
      'requests',
      'rdflib',
-     'networkx'
+     'networkx',
+     'matplotlib'
     ],
     packages=[
      'jena_com',

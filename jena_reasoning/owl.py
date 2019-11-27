@@ -1,6 +1,7 @@
 import json
 from rdflib import URIRef, BNode, Literal, Namespace, RDF
 from jena_com.communication import Server
+import jena_com.queries as qry
 
 class Knowledge:
 
@@ -31,32 +32,40 @@ class Knowledge:
             self.server.create(triple[0], triple[1], triple[2])
         return list_triples
 
-    def retrieve_stp_from_ontology(self, skill_name):
+    def retrieve_assembly_steps(self):
         ''' Given the name of a skill retrieves the list of steps and constraints associated with it. '''
+        steps = self.server.query(qry.select_assembly_steps())
+        return steps
 
-    def deduce_step(self):
+    def retrieve_links(self, step_name):
         ''' Given a list of parts and links, isolate independant groups of tasks. '''
-        pass
+        constraints = [x[0].toPython() for x in self.server.query(qry.select_links(step_name))]
+        return constraints
 
-    def deduce_constraints(self):
+    def retieve_type(self, part):
         '''  Given a list of parts and links, identifies a sequence order. '''
-        pass
+        type = [x[0].toPython() for x in self.server.query(qry.select_type(part))]
+        type = [x for x in type if x != 'NamedIndividual']
+        if len(type) == 1:
+            type = type[0]
+        return type
 
-    def deduce_task(self):
-        ''' Given a list of parts and links, identifies within step the different phases of the assembly '''
-        pass
-
-    def assembly_by_disassembly(self, jsdata):
-        ''' Given a list of parts and links, generates a complete XML file enabling planning later on. '''
-        print(jsdata)
-        # Transform children relationships into undirectional links
-
-        # Each object has:
-        # - properties
-        # - links/constraints
-
-        # Group them into parallel sets. The planner needs a list of steps and a list of constraints.
-
-        # Generate ontology file with all the info
-
-        # The file can later on be added to the ontology server and be performed
+    def deduce_assembly_logic(self, assembly):
+        ''' Given objects decides which one is inserted in which '''
+        if len(assembly) == 2:  # Just insert peg in hole
+            type = self.retieve_type(assembly[0])
+            if type == 'Peg':
+                return (assembly[0], assembly[1])
+            else:
+                return (assembly[1], assembly[0])
+        else:
+            hole = None
+            for part in assembly:
+                if self.retieve_type(part) == 'Hole':
+                    hole = part
+                    break
+            edges = []
+            for part in assembly:
+                if part != hole:
+                    edges.append((part, hole))
+            return edges

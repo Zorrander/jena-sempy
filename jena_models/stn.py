@@ -2,12 +2,15 @@ import copy
 import networkx as nx
 from os.path import expanduser
 from networkx.readwrite import json_graph
-import jena_com.queries as qry
-from jena_com.communication import Server
+from jena_reasoning.owl import Knowledge
+import matplotlib.pyplot as plt
+
+DEFAULT_HUMAN_EXECUTION_TIME = (10, 20)
+DEFAULT_ROBOT_EXECUTION_TIME = (20, 30)
 
 class SimpleTemporalNetwork(object):
     def __init__(self):
-        self.server = Server()
+        self.reasoner = Knowledge()
         self._graph = nx.DiGraph()
         self.synch_table = {}
 
@@ -16,68 +19,43 @@ class SimpleTemporalNetwork(object):
 
         Translate the lists of steps and their constraints into timepoints and links between them.
         """
-        # Find steps involved in skill
-        steps = [x[0].toPython() for x in self.server.query(qry.select_steps(skill))]
-        print(steps)
-        for step in steps:
-            tasks = []
-            res = self.server.query(qry.select_previous_state_and_first_task(step))  # Retrieve all their constraints
-            print(res)
-            previous = res[0]
-            if res[1]:
-                first_task = res[1]
-            """
-            res = utils.kb.query(q, initNs=utils.namespaces)
-            result =  [x for x in res]
-            res_row = result[0]
-            first_task = (str(res_row[0].toPython()))
-            if res_row[1]:
-                previous_step = (str(res_row[1].toPython()))
-            """
-            tasks.append(first_task)
-            has_next = True
-            previous = first_task
-            while has_next:
-                next_task = self.server.query(qry.select_next_task(step))
-                if next_task:
-                    tasks.append(next_task[0])
-                    previous = next_task[0]
-                else:
-                    has_next = False
-            print(tasks, previous)
+        list_steps = self.reasoner.retrieve_assembly_steps()
+        list_steps = [x[0].toPython() for x in list_steps]
+        list_parts = []
+        list_assemblies = []
 
-        print("Steps >>>")
-        for step in steps:
-            print("{} >>> {} >>> {}".format(step[0], step[1], step[2]))
-        print("Constraints >>>")
-        for constraint in constraints:
-            print("{} -------- {}".format(constraint[0], constraint[1]))
-        stn = SimpleTemporalNetwork()
-        for step in steps:
-            self.base_solution.synch_table.update( { step[0] : [] } )
-            previous = ""
-            for task in step[2]:
-                node = stn.add_event(task, step[1], step[0])
-                if previous and previous != node:
-                    stn.set_relation(previous, node, 'temporal_constraint', (DEFAULT_HUMAN_EXECUTION_TIME, DEFAULT_ROBOT_EXECUTION_TIME))
-                previous = node
+        for assy_step in list_steps:
+            list_assemblies.append(self.reasoner.retrieve_links(assy_step))
 
-        for constraint in constraints:
-            if constraint[0]:
-                node_b = stn._find_first_task(constraint[1])
-                if isinstance(constraint[0], list):
-                    for step in constraint[0]:
-                        node_a = stn._find_last_task(step)
-                        stn.set_relation(node_a, node_b, 'temporal_constraint', (DEFAULT_HUMAN_EXECUTION_TIME, DEFAULT_ROBOT_EXECUTION_TIME))
-                        self.base_solution.synch_table[constraint[1]].append(step)
-                else:
-                    node_a = stn._find_last_task(constraint[0])
-                    stn.set_relation(node_a, node_b, 'temporal_constraint', (DEFAULT_HUMAN_EXECUTION_TIME, DEFAULT_ROBOT_EXECUTION_TIME))
-                    self.base_solution.synch_table[constraint[1]].append(constraint[0])
+        for list_link in list_assemblies:
+            for part in list_link:
+                if part not in list_parts:
+                    list_parts.append(part)
+
+        print ("list_assemblies {}".format(list_assemblies))
+        for part in list_parts:
+            type = self.reasoner.retieve_type(part)
+
+        for part in list_parts:
+            self.synch_table.update( { part : [] } )
+
+        for assembly in list_assemblies:
+            #for edge in edges:
+            edges = self.reasoner.deduce_assembly_logic(assembly)
+            print("EDGES: {}".format(edges))
+            if len(edges) == 2:
+                print("1. Adding {} > {}".format(edges[0], edges[1]))
+                self.set_relation(edges[0], edges[1], 'temporal_constraint', (DEFAULT_HUMAN_EXECUTION_TIME, DEFAULT_ROBOT_EXECUTION_TIME))
             else:
-                node = stn._find_first_task(constraint[1])
-                stn.set_relation("Start", node, 'temporal_constraint', (-10000, 0))
-        return stn, steps
+                for edge in edges:
+                    print("2. Adding {} > {}".format(edge[0], edge[1]))
+                    self.set_relation(edge[0], edge[1], 'temporal_constraint', (DEFAULT_HUMAN_EXECUTION_TIME, DEFAULT_ROBOT_EXECUTION_TIME))
+
+        pos = nx.shell_layout(self._graph)
+        nx.draw_networkx_nodes(self._graph, pos, cmap=plt.get_cmap('jet'), node_size = 500)
+        nx.draw_networkx_labels(self._graph, pos)
+        nx.draw_networkx_edges(self._graph, pos, edge_color='r', arrows=True)
+        plt.show()
 
     @property
     def timepoints(self):
@@ -106,10 +84,10 @@ class SimpleTemporalNetwork(object):
         """Return the value for an attribute of the node 'event' if data. All the attributes otherwise."""
         return self._graph.nodes(data=data)[event] if data else self._graph.nodes(data=True)[event]
 
-    def add_event(self, name, task=None, step=None, is_done=False):
+    def add_event(self, name, task=None, is_done=False):
         """Create a new node in the graph."""
         id = nx.number_of_nodes(self._graph)+1
-        self._graph.add_node(id, value=name, task=task, step=step, is_done=is_done, is_claimed=False)
+        self._graph.add_node(id, value=name, task=task, is_done=is_done, is_claimed=False)
         return id
 
     def set_event(self, name, data, value):
