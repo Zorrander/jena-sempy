@@ -32,9 +32,9 @@ class Knowledge:
             self.server.create(triple[0], triple[1], triple[2])
         return list_triples
 
-    def retrieve_assembly_steps(self):
+    def retrieve_assembly_steps(self, skill):
         ''' Given the name of a skill retrieves the list of steps and constraints associated with it. '''
-        steps = self.server.query(qry.select_assembly_steps())
+        steps = self.server.query(qry.select_assembly_steps(skill))
         return steps
 
     def retrieve_links(self, step_name):

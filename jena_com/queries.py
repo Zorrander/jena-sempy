@@ -31,7 +31,7 @@ def select_skill(action, target):
     """
     return query
 
-def select_assembly_steps():
+def select_assembly_steps(skill):
     query = """
         SELECT ?s
         WHERE {

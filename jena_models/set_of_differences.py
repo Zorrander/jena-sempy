@@ -1,3 +1,5 @@
+from policies import Policy
+
 class SetOfDifferences(object):
 
     def __init__(self):
@@ -18,13 +20,14 @@ class SetOfDifferences(object):
         assignment = self.valid_assignments[assignment_counter]
         assignment.set_relation(u, v, 'temporal_constraint', weight)
 
-    def initialize_set_of_differences(self, base_solution, steps, planning_policy):
+    def initialize_set_of_differences(self, base_solution, steps):
         """ Compute all the valid full task assignments """
         result = []
+        planning_policy = Policy()
         planning_policy.evaluate(steps, base_solution)
         print("Creating the set of differences:")
-        for p in tqdm(range(0, len(planning_policy.valid_assignments))):
-            self.valid_assignments.append(self.create_component_solution(planning_policy.valid_assignments[p], base_solution))
+        for p in planning_policy.valid_assignments:
+            self.valid_assignments.append(self.create_component_solution(, base_solution))
 
     def create_component_solution(self, policy, stn):
         """ Create a task assignment.
