@@ -1,4 +1,4 @@
-from policies import Policy
+from jena_models.policies import Policy
 
 class SetOfDifferences(object):
 

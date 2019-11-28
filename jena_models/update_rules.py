@@ -17,6 +17,10 @@ P. Morris, N. Muscettola, and T. Vidal, "Dynamic Control Of Plans With Temporal 
 """
 from jena_models.constraints import TemporalConstraint
 
+DEFAULT_HUMAN_EXECUTION_TIME = (10, 20)
+DEFAULT_ROBOT_EXECUTION_TIME = (20, 30)
+
+
 def dynamic_backpropagation_rule_I(temporal_constraint, base_solution):
     """docstring for TemporalConstraint."""
     A = temporal_constraint.event_a

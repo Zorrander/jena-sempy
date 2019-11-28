@@ -5,6 +5,9 @@ from networkx.readwrite import json_graph
 from jena_reasoning.owl import Knowledge
 import matplotlib.pyplot as plt
 
+DEFAULT_HUMAN_EXECUTION_TIME = (10, 20)
+DEFAULT_ROBOT_EXECUTION_TIME = (20, 30)
+
 class BaseSolution():
     def __init__(self):
         self.reasoner = Knowledge()
@@ -52,35 +55,21 @@ class BaseSolution():
         """
         list_steps = self.reasoner.retrieve_assembly_steps(skill)
         list_steps = [x[0].toPython() for x in list_steps]
-        list_parts = []
         list_assemblies = []
 
         for assy_step in list_steps:
             list_assemblies.append(self.reasoner.retrieve_links(assy_step))
 
         for list_link in list_assemblies:
-            for part in list_link:
-                if part not in list_parts:
-                    list_parts.append(part)
+            edges = self.reasoner.deduce_assembly_logic(list_link)
+            self.add_event(peg = edges[0], hole = edges[1])
 
-        print ("list_assemblies {}".format(list_assemblies))
-        for part in list_parts:
-            type = self.reasoner.retieve_type(part)
-
-        for part in list_parts:
-            self.synch_table.update( { part : [] } )
-
-        for assembly in list_assemblies:
-            #for edge in edges:
-            edges = self.reasoner.deduce_assembly_logic(assembly)
-            print("EDGES: {}".format(edges))
-            if len(edges) == 2:
-                print("1. Adding {} > {}".format(edges[0], edges[1]))
-                self.set_relation(edges[0], edges[1], 'temporal_constraint', (DEFAULT_HUMAN_EXECUTION_TIME, DEFAULT_ROBOT_EXECUTION_TIME))
-            else:
-                for edge in edges:
-                    print("2. Adding {} > {}".format(edge[0], edge[1]))
+        for id_node_a, data_node_a in list(self._graph.nodes.data()):
+            for id_node_b, data_node_b in list(self._graph.nodes.data()):
+                if id_node_a != id_node_b and data_node_a['peg'] == data_node_b['peg']:
+                    print("Peg : {} Between {} and {}".format(data_node_a['peg'], data_node_a['hole'], data_node_b['hole']))
                     self.set_relation(edge[0], edge[1], 'temporal_constraint', (DEFAULT_HUMAN_EXECUTION_TIME, DEFAULT_ROBOT_EXECUTION_TIME))
+
 
         pos = nx.shell_layout(self._graph)
         nx.draw_networkx_nodes(self._graph, pos, cmap=plt.get_cmap('jet'), node_size = 500)
@@ -117,10 +106,10 @@ class BaseSolution():
         """Return the value for an attribute of the node 'event' if data. All the attributes otherwise."""
         return self._graph.nodes(data=data)[event] if data else self._graph.nodes(data=True)[event]
 
-    def add_event(self, name, task=None, is_done=False):
+    def add_event(self, peg, hole, is_done=False):
         """Create a new node in the graph."""
         id = nx.number_of_nodes(self._graph)+1
-        self._graph.add_node(id, value=name, task=task, is_done=is_done, is_claimed=False)
+        self._graph.add_node(id, peg=peg, hole=hole, is_done=is_done, is_claimed=False)
         return id
 
     def set_event(self, name, data, value):

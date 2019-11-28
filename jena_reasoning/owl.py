@@ -42,7 +42,7 @@ class Knowledge:
         constraints = [x[0].toPython() for x in self.server.query(qry.select_links(step_name))]
         return constraints
 
-    def retieve_type(self, part):
+    def retrieve_type(self, part):
         '''  Given a list of parts and links, identifies a sequence order. '''
         type = [x[0].toPython() for x in self.server.query(qry.select_type(part))]
         type = [x for x in type if x != 'NamedIndividual']
@@ -53,7 +53,7 @@ class Knowledge:
     def deduce_assembly_logic(self, assembly):
         ''' Given objects decides which one is inserted in which '''
         if len(assembly) == 2:  # Just insert peg in hole
-            type = self.retieve_type(assembly[0])
+            type = self.retrieve_type(assembly[0])
             if type == 'Peg':
                 return (assembly[0], assembly[1])
             else:
