@@ -27,7 +27,7 @@ class SetOfDifferences(object):
         planning_policy.evaluate(steps, base_solution)
         print("Creating the set of differences:")
         for p in planning_policy.valid_assignments:
-            self.valid_assignments.append(self.create_component_solution(, base_solution))
+            self.valid_assignments.append(self.create_component_solution(p, base_solution))
 
     def create_component_solution(self, policy, stn):
         """ Create a task assignment.
