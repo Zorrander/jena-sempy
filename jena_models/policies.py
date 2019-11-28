@@ -4,15 +4,15 @@ import itertools
 
 class Policy:
 
-    def __init__(self, func = None):
+    def __init__(self):
       self.threshold = 1000
       self.threshold2 = 1000
       self.valid_assignments = []
-      if func is not None:
-         self.evaluate = types.MethodType(func, self)
+      #if func is not None:
+        # self.evaluate = types.MethodType(func, self)
 
-    def evaluate(self):
-        print("Error. No policy chosen.")
+    def evaluate(self, steps, stn):
+        self.balanced_repartition(steps, stn)
 
     def compute_working_time(self, repartition, base_solution):
         working_time_h, iddle_time_h, working_time_r, iddle_time_r = (0,)*4

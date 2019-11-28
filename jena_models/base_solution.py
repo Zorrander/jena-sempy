@@ -88,6 +88,7 @@ class BaseSolution():
         nx.draw_networkx_edges(self._graph, pos, edge_color='r', arrows=True)
         plt.show()
 
+        return list_steps
 
     @property
     def timepoints(self):
