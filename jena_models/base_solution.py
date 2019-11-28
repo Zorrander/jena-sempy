@@ -5,7 +5,7 @@ from networkx.readwrite import json_graph
 from jena_reasoning.owl import Knowledge
 import matplotlib.pyplot as plt
 
-class BaseSolution(SimpleTemporalNetwork):
+class BaseSolution():
     def __init__(self):
         self.reasoner = Knowledge()
         self._graph = nx.DiGraph()
