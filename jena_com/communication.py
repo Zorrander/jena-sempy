@@ -69,3 +69,11 @@ class Server:
         filename = expanduser("~")+"/"+filename+".owl"
         file = open(filename, "w+")
         file.write(self.g.serialize(format='xml'))
+
+    '''
+    <rdf:RDF xml:base="http://www.w3.org/2002/07/owl">
+    <Ontology rdf:about="http://cognitive.robotics.tut#"/>
+
+
+    </rdf:RDF>
+    '''

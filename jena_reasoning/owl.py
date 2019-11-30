@@ -53,11 +53,15 @@ class Knowledge:
     def deduce_assembly_logic(self, assembly):
         ''' Given objects decides which one is inserted in which '''
         if len(assembly) == 2:  # Just insert peg in hole
-            type = self.retrieve_type(assembly[0])
-            if type == 'Peg':
+            print("assembly: {}".format(assembly))
+            type1 = self.retrieve_type(assembly[0])
+            type2 = self.retrieve_type(assembly[1])
+            if type1 == 'Peg' and type2 == 'Hole':
                 return (assembly[0], assembly[1])
-            else:
+            elif type2 == 'Peg' and type1 == 'Hole':
                 return (assembly[1], assembly[0])
+            else:
+                return((assembly[0], assembly[1]),None)
         else:
             hole = None
             for part in assembly:

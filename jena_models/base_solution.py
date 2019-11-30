@@ -62,14 +62,19 @@ class BaseSolution():
 
         for list_link in list_assemblies:
             edges = self.reasoner.deduce_assembly_logic(list_link)
-            self.add_event(peg = edges[0], hole = edges[1])
+            print("Edges {}".format(edges))
+            if not isinstance(edges[0], tuple):
+                self.add_event(peg = edges[0], hole = edges[1])
+            else:
+                self.add_event(peg = (edges[0][0], edges[0][1]), hole = "")
 
         for id_node_a, data_node_a in list(self._graph.nodes.data()):
             for id_node_b, data_node_b in list(self._graph.nodes.data()):
-                if id_node_a != id_node_b and data_node_a['peg'] == data_node_b['peg']:
-                    print("Peg : {} Between {} and {}".format(data_node_a['peg'], data_node_a['hole'], data_node_b['hole']))
-                    self.set_relation(edge[0], edge[1], 'temporal_constraint', (DEFAULT_HUMAN_EXECUTION_TIME, DEFAULT_ROBOT_EXECUTION_TIME))
-
+                print(data_node_b)
+                if id_node_a != id_node_b:
+                     for x in data_node_a['peg']:
+                        if x in data_node_b['peg']:
+                            self.set_relation(id_node_a, id_node_b, 'temporal_constraint', (DEFAULT_HUMAN_EXECUTION_TIME, DEFAULT_ROBOT_EXECUTION_TIME))
 
         pos = nx.shell_layout(self._graph)
         nx.draw_networkx_nodes(self._graph, pos, cmap=plt.get_cmap('jet'), node_size = 500)
