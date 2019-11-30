@@ -1,4 +1,5 @@
 from jena_models.policies import Policy
+from jena_models.assignments import FullTaskAssignment
 
 class SetOfDifferences(object):
 
