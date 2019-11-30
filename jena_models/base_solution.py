@@ -114,7 +114,7 @@ class BaseSolution():
     def add_event(self, peg, hole, is_done=False):
         """Create a new node in the graph."""
         id = nx.number_of_nodes(self._graph)+1
-        self._graph.add_node(id, step="Step"+id, peg=peg, hole=hole, is_done=is_done, is_claimed=False)
+        self._graph.add_node(id, step="Step"+str(id), peg=peg, hole=hole, is_done=is_done, is_claimed=False)
         return id
 
     def set_event(self, name, data, value):
