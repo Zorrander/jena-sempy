@@ -14,12 +14,11 @@ class BaseSolution():
         self._graph = nx.DiGraph()
         self.synch_table = {}
 
-    def relax_network(self, stn):
+    def relax_network(self):
         """ Relax the temporal constraints.
 
         The disjunctive constraints can be combined by taking only the lower and upper bounds.
         """
-        self._graph = copy.deepcopy(stn._graph)
         for u, v, weight in tqdm(self._graph.edges(data='temporal_constraint')):
             if not u=="Start":
                 human_expectations = weight[0]
