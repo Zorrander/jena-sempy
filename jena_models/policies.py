@@ -12,7 +12,17 @@ class Policy:
         # self.evaluate = types.MethodType(func, self)
 
     def evaluate(self, steps, stn):
-        self.balanced_repartition(steps, stn)
+        self.name = "balanced"
+        for repartition in list(itertools.product([False, True], repeat=len(steps))):
+            working_time_h, iddle_time_h, working_time_r, iddle_time_r = self.compute_working_time(repartition, stn)
+            working_time = abs(working_time_h - working_time_r)
+            if working_time < self.threshold:
+                self.threshold = working_time
+                self.valid_assignments = [repartition]
+                self.data = [[working_time_h, iddle_time_h, working_time_r, iddle_time_r]]
+            elif working_time == self.threshold:
+                self.valid_assignments.append(repartition)
+                self.data.append([working_time_h, iddle_time_h, working_time_r, iddle_time_r])
 
     def compute_working_time(self, repartition, base_solution):
         working_time_h, iddle_time_h, working_time_r, iddle_time_r = (0,)*4
