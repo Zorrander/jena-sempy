@@ -19,7 +19,7 @@ class BaseSolution():
 
         The disjunctive constraints can be combined by taking only the lower and upper bounds.
         """
-        for u, v, weight in tqdm(self._graph.edges(data='temporal_constraint')):
+        for u, v, weight in self._graph.edges(data='temporal_constraint'):
             if not u=="Start":
                 human_expectations = weight[0]
                 robot_expectations = weight[1]
@@ -140,7 +140,7 @@ class BaseSolution():
         The distance graph indicates the same interval as the constraint but yields two equivalent inequalities.
         """
         new_edges = []
-        for u, v, weight in tqdm(self._graph.edges(data='temporal_constraint')):
+        for u, v, weight in self._graph.edges(data='temporal_constraint'):
             lower_bound = weight[0] if not isinstance(weight, int) else weight
             upper_bound = weight[1] if not isinstance(weight, int) else weight
             self.set_relation(u, v, 'temporal_constraint', upper_bound)
@@ -153,7 +153,7 @@ class BaseSolution():
         Computes a fully-connected network, with binary constraints relating each pair of events.
         """
         distance = nx.floyd_warshall(self._graph, weight='temporal_constraint')
-        for node_a in tqdm(distance):
+        for node_a in distance:
             for node_b in distance[node_a]:
                 if not(node_a==node_b or (node_a, node_b) in list(self._graph.edges)):
                     self.set_relation(node_a, node_b, 'temporal_constraint', distance[node_a][node_b])
@@ -164,7 +164,7 @@ class BaseSolution():
         Remove dominated edges to make STN dispatchable.
         """
         graph = copy.deepcopy(self._graph)
-        for A, B, weight in tqdm(self._graph.edges(data='temporal_constraint')):
+        for A, B, weight in self._graph.edges(data='temporal_constraint'):
             for C in set(self._graph.successors(A)).intersection(self._graph.successors(B)):
                 a_c = self.has_relation(A, C)
                 b_c = self.has_relation(B, C)
