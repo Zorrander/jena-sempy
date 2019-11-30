@@ -75,13 +75,13 @@ class BaseSolution():
                      for x in data_node_a['peg']:
                         if x in data_node_b['peg']:
                             self.set_relation(id_node_a, id_node_b, 'temporal_constraint', (DEFAULT_HUMAN_EXECUTION_TIME, DEFAULT_ROBOT_EXECUTION_TIME))
-
+        '''
         pos = nx.shell_layout(self._graph)
         nx.draw_networkx_nodes(self._graph, pos, cmap=plt.get_cmap('jet'), node_size = 500)
         nx.draw_networkx_labels(self._graph, pos)
         nx.draw_networkx_edges(self._graph, pos, edge_color='r', arrows=True)
         plt.show()
-
+        '''
         return list_steps
 
     @property
