@@ -24,9 +24,9 @@ class SetOfDifferences(object):
     def initialize_set_of_differences(self, base_solution, policy):
         """ Compute all the valid full task assignments """
         result = []
-        planning_policy.evaluate(base_solution)
+        policy.evaluate(base_solution)
         print("Creating the set of differences:")
-        for p in planning_policy.valid_assignments:
+        for p in policy.valid_assignments:
             self.valid_assignments.append(self.create_component_solution(p, base_solution))
 
     def create_component_solution(self, policy, stn):
