@@ -65,7 +65,7 @@ class Knowledge:
         else:
             hole = None
             for part in assembly:
-                if self.retieve_type(part) == 'Hole':
+                if self.retrieve_type(part) == 'Hole':
                     hole = part
                     break
             edges = []

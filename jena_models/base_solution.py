@@ -60,28 +60,47 @@ class BaseSolution():
         for assy_step in list_steps:
             list_assemblies.append(self.reasoner.retrieve_links(assy_step))
 
-        for list_link in list_assemblies:
-            edges = self.reasoner.deduce_assembly_logic(list_link)
-            print("Edges {}".format(edges))
-            if not isinstance(edges[0], tuple):
-                self.add_event(peg = edges[0], hole = edges[1])
+        step = 0
+        while(list_assemblies):
+            less_constrained = []
+            min = 10
+
+            for x in list_assemblies:
+                if len(x) < min:
+                    less_constrained = []
+                    less_constrained.append(x)
+                    min = len(x)
+                elif len(x) == min:
+                    less_constrained.append(x)
+            if not less_constrained:
+                min=min-1
             else:
-                self.add_event(peg = (edges[0][0], edges[0][1]), hole = "")
+                step=step+1
+                print("Round of less constrained: {}".format(less_constrained))
+                list_assemblies = [item for item in list_assemblies if item not in less_constrained]
+                print("Round of assemblies: {}".format(list_assemblies))
+
+                for list_link in less_constrained:
+                    edges = self.reasoner.deduce_assembly_logic(list_link)
+                    print("Edges {}".format(edges))
+                    if not isinstance(edges[0], tuple):
+                        self.add_event(peg = edges[0], hole = edges[1], step=step)
+                    else:
+                        self.add_event(peg = (edges[0][0], edges[0][1]), hole = "", step=step)
+
 
         for id_node_a, data_node_a in list(self._graph.nodes.data()):
             for id_node_b, data_node_b in list(self._graph.nodes.data()):
-                print(data_node_b)
-                if id_node_a != id_node_b:
-                     for x in data_node_a['peg']:
-                        if x in data_node_b['peg']:
-                            self.set_relation(id_node_a, id_node_b, 'temporal_constraint', (DEFAULT_HUMAN_EXECUTION_TIME, DEFAULT_ROBOT_EXECUTION_TIME))
-        '''
+                print("Round of nodes: {},{} and {},{}".format(id_node_a, data_node_a, id_node_b, data_node_b))
+                if data_node_a['step'] > data_node_b['step']:
+                    self.set_relation(id_node_a, id_node_b, 'temporal_constraint', (DEFAULT_HUMAN_EXECUTION_TIME, DEFAULT_ROBOT_EXECUTION_TIME))
+
         pos = nx.shell_layout(self._graph)
         nx.draw_networkx_nodes(self._graph, pos, cmap=plt.get_cmap('jet'), node_size = 500)
         nx.draw_networkx_labels(self._graph, pos)
         nx.draw_networkx_edges(self._graph, pos, edge_color='r', arrows=True)
         plt.show()
-        '''
+
         return list_steps
 
     @property
@@ -111,10 +130,10 @@ class BaseSolution():
         """Return the value for an attribute of the node 'event' if data. All the attributes otherwise."""
         return self._graph.nodes(data=data)[event] if data else self._graph.nodes(data=True)[event]
 
-    def add_event(self, peg, hole, is_done=False):
+    def add_event(self, peg, hole, step, is_done=False):
         """Create a new node in the graph."""
         id = nx.number_of_nodes(self._graph)+1
-        self._graph.add_node(id, step="Step"+str(id), peg=peg, hole=hole, is_done=is_done, is_claimed=False)
+        self._graph.add_node(id, step=step, peg=peg, hole=hole, is_done=is_done, is_claimed=False)
         return id
 
     def set_event(self, name, data, value):
