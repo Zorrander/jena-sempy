@@ -1,4 +1,5 @@
 import copy
+import json
 import networkx as nx
 from os.path import expanduser
 from networkx.readwrite import json_graph
