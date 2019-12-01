@@ -11,8 +11,11 @@ class Policy:
       #if func is not None:
         # self.evaluate = types.MethodType(func, self)
 
-    def evaluate(self, steps, stn):
+    def evaluate(self, base_solution):
         self.name = "balanced"
+        steps = []
+        for step, subgraph in base_solution.available_steps():
+            steps.append(step)
         for repartition in list(itertools.product([False, True], repeat=len(steps))):
             working_time_h, iddle_time_h, working_time_r, iddle_time_r = self.compute_working_time(repartition, stn)
             working_time = abs(working_time_h - working_time_r)
