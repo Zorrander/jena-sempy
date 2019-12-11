@@ -40,10 +40,12 @@ class BaseSolution():
             #nx.write_graphml(self._graph, "dist.graphml")
             print("Calculating the APSP form of the graph:")
             self.all_pairs_shortest_paths()
+            self.print_graph()
             print("Writing resulting graph into apsp.graphml")
             #nx.write_graphml(self._graph, "apsp.graphml")
             print("Removing dominated edges:")
             self.prune_redundant_constraints()
+            self.print_graph()
             self.graph_to_json()
         elif method == "chordal":
             pass
