@@ -14,7 +14,7 @@ class Policy:
     def evaluate(self, base_solution):
         self.name = "balanced"
         steps = []
-        for step, subgraph in base_solution.available_steps():
+        for step, subgraph in base_solution._graph.nodes.data():
             steps.append(step)
         for repartition in list(itertools.product([False, True], repeat=len(steps))):
             working_time_h, iddle_time_h, working_time_r, iddle_time_r = self.compute_working_time(repartition, base_solution)
@@ -28,16 +28,17 @@ class Policy:
                 self.data.append([working_time_h, iddle_time_h, working_time_r, iddle_time_r])
 
     def compute_working_time(self, repartition, base_solution):
+        ''' Simulate an execution to calculate each worker's working time '''
         working_time_h, iddle_time_h, working_time_r, iddle_time_r = (0,)*4
         human_waiting, robot_waiting = (False,)*2
         stn = copy.deepcopy(base_solution)
-        while stn.synch_table:
+        while stn.available_steps():
             if (working_time_h <= working_time_r or robot_waiting) and not human_waiting:
-                moves = [(step, subgraph) for step, subgraph in stn.available_steps() if not repartition[int(step.split("Step")[1])-1]]
+                moves = [step for step in stn.available_steps() if not repartition[step-1]]
                 if moves:
                     #working_time_h+=self.simulate_step(moves[0])
                     working_time_h+=20
-                    stn.update_after_completion(moves[0][0], 0)
+                    stn.update_after_completion(moves[0], 0)
                     if robot_waiting:
                         robot_waiting = False
                         iddle_time_r+= abs(working_time_h- working_time_r)
@@ -45,17 +46,20 @@ class Policy:
                 else:
                     human_waiting = True
             elif (working_time_h > working_time_r or human_waiting) and not robot_waiting:
-                moves = [(step, subgraph) for step, subgraph in stn.available_steps() if repartition[int(step.split("Step")[1])-1]]
+                moves = [step for step in stn.available_steps() if repartition[step-1]]
                 if moves:
                     #working_time_r+=self.simulate_step(moves[0])
                     working_time_r+=30
-                    stn.update_after_completion(moves[0][0], 0)
+                    stn.update_after_completion(moves[0], 0)
                     if human_waiting:
                         human_waiting = False
                         iddle_time_h+=abs(working_time_r - working_time_h)
                         working_time_h+=working_time_r - working_time_h
                 else:
                     robot_waiting = True
+            else:
+                print("WORKING TIMES ARE: {} - {} - {} - {} - {} - {}".format(working_time_h, iddle_time_h, working_time_r, iddle_time_r, human_waiting, robot_waiting))
+                print("Impossible case")
         return working_time_h, iddle_time_h, working_time_r, iddle_time_r
 
     def simulate_step(self, step):

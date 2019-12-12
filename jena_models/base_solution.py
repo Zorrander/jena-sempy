@@ -36,17 +36,14 @@ class BaseSolution():
             print("Construct distance graph:")
             self.construct_distance_graph()
             print("Writing resulting graph into dist.graphml")
-            self.print_graph()
             #nx.write_graphml(self._graph, "dist.graphml")
             print("Calculating the APSP form of the graph:")
             self.all_pairs_shortest_paths()
-            self.print_graph()
             print("Writing resulting graph into apsp.graphml")
             #nx.write_graphml(self._graph, "apsp.graphml")
             print("Removing dominated edges:")
             self.prune_redundant_constraints()
-            self.print_graph()
-            self.graph_to_json()
+            #self.graph_to_json()
         elif method == "chordal":
             pass
 
@@ -78,13 +75,13 @@ class BaseSolution():
                 min=min-1
             else:
                 step=step+1
-                print("Round of less constrained: {}".format(less_constrained))
+                # print("Round of less constrained: {}".format(less_constrained))
                 list_assemblies = [item for item in list_assemblies if item not in less_constrained]
-                print("Round of assemblies: {}".format(list_assemblies))
+                # print("Round of assemblies: {}".format(list_assemblies))
 
                 for list_link in less_constrained:
                     edges = self.reasoner.deduce_assembly_logic(list_link)
-                    print("Edges {}".format(edges))
+                    # print("Edges {}".format(edges))
                     if not isinstance(edges[0], tuple):
                         self.add_event(peg = edges[0], hole = edges[1], step=step)
                     else:
@@ -93,7 +90,7 @@ class BaseSolution():
 
         for id_node_a, data_node_a in list(self._graph.nodes.data()):
             for id_node_b, data_node_b in list(self._graph.nodes.data()):
-                print("Round of nodes: {},{} and {},{}".format(id_node_a, data_node_a, id_node_b, data_node_b))
+                # print("Round of nodes: {},{} and {},{}".format(id_node_a, data_node_a, id_node_b, data_node_b))
                 if data_node_a['step'] > data_node_b['step']:
                     self.set_relation(id_node_a, id_node_b, 'temporal_constraint', (DEFAULT_HUMAN_EXECUTION_TIME, DEFAULT_ROBOT_EXECUTION_TIME))
 
@@ -105,16 +102,20 @@ class BaseSolution():
         return [task for task in self._graph.nodes(data=True) if not task[0] == "Start"]
 
     def update_after_completion(self, event, time):
-        print ("Before {}".format(self.synch_table))
-        del self.synch_table[event]
-        for step, synch in self.synch_table.items():
-            if event in synch:
-                self.synch_table[step].remove(event)
-        print ("After {}".format(self.synch_table))
+        # print ("Before {}".format(self.synch_table))
+        print("Graph before completion of node {}: {}".format(event, self._graph.nodes(data=True)))
+        self._graph.nodes[event]['is_done'] = True
+        print("Graph after completion of node {}: {}".format(event, self._graph.nodes(data=True)))
+        # del self.synch_table[event]
+        # for step, synch in self.synch_table.items():
+        #    if event in synch:
+        #         self.synch_table[step].remove(event)
+        # print ("After {}".format(self.synch_table))
 
     def available_steps(self):
         """Get the available events in the network."""
-        return [(step, self.retrieve_subgraph(step)) for step, synch in self.synch_table.items() if not synch]
+        # print("Remaining steps are: {}".format([step for step, data in self._graph.nodes.data() if not data['is_done']]))
+        return [step for step, data in self._graph.nodes.data() if not data['is_done']]
 
     def retrieve_subgraph(self, step):
         return self._graph.subgraph( [n for n,attrdict in self._graph.node.items() if not n == "Start" and attrdict['step'] == step ] )

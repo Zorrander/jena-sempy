@@ -13,7 +13,8 @@ setup(
      'requests',
      'rdflib',
      'networkx',
-     'matplotlib<=2-2-4'
+     'matplotlib'
+#     'matplotlib<=2-2-4'
     ],
     packages=[
      'jena_com',
