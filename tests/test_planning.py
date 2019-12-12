@@ -66,11 +66,49 @@ class TestPlanning(TestCase):
         self.assertTrue(False)
 
     def test_create_component_solution(self):
-        set_dif = SetOfDifferences()
+        b_s = BaseSolution()
+        s_o_d = SetOfDifferences()
+        policy = Policy()
+        # Create plan
+        b_s.model_temporal_problem("Cranfield_Assembly")
+        b_s.relax_network()
+        b_s.construct_distance_graph()
+        b_s.all_pairs_shortest_paths()
+        b_s.prune_redundant_constraints()
+        # Evaluate policies
+        print("Evaluating: {}".format(b_s._graph.nodes.data()))
+        policy.evaluate(b_s)
+        print("Policy results")
+        print(policy.valid_assignments)
+        print(policy.data)
+        # Build set of differences
+        s_o_d.initialize_set_of_differences(b_s, policy)
         self.assertTrue(False)
 
     def test_backpropagate_task_assign(self):
-        set_dif = SetOfDifferences()
+        b_s = BaseSolution()
+        s_o_d = SetOfDifferences()
+        policy = Policy()
+        # Create plan
+        b_s.model_temporal_problem("Cranfield_Assembly")
+        b_s.relax_network()
+        b_s.construct_distance_graph()
+        b_s.all_pairs_shortest_paths()
+        b_s.prune_redundant_constraints()
+        # Evaluate policies
+        print("Evaluating: {}".format(b_s._graph.nodes.data()))
+        policy.evaluate(b_s)
+        print("Policy results")
+        print(policy.valid_assignments)
+        print(policy.data)
+        # Build set of differences
+        s_o_d.initialize_set_of_differences(b_s, policy)
+        print(s_o_d.self.valid_assignments)
+        for full_assignment in s_o_d.valid_assignments:
+            constraints = [asg[0] for asg in full_assignment.task_assignments]
+            temporally_consistent = s_o_d.backpropagate_task_assign(constraints, self.base_solution, full_assignment)
+            if not temporally_consistent:
+                full_assignment.feasible = False
         self.assertTrue(False)
 
     def test_dbp_rule_I(self):

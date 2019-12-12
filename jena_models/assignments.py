@@ -5,7 +5,6 @@ class FullTaskAssignment(object):
 
     def __init__(self):
         self.task_assignments = []
-        self.step_assignments = {}
         self.feasible = True
 
     def add_assignment(self, *argv):
