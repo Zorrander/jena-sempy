@@ -44,11 +44,7 @@ class SetOfDifferences(object):
         result = FullTaskAssignment()
         for x in range(0, len(policy)):
             agent = "Robot" if policy[x] else "Human"
-            result.step_assignments.update({'Step'+str(x+1):agent})
-            step_graph = stn._graph.subgraph( [n for n,attrdict in stn._graph.node.items() if not n == "Start" and attrdict['step'] == 'Step'+str(x+1) ] )
-            for u, v, weight in step_graph.edges(data='temporal_constraint'):
-                if not(u == "Start"):
-                    result.add_assignment(u, v, weight, agent)
+            result.step_assignments.update({(x+1):agent})
         return result
 
     def backpropagate_task_assign(self, constraints, base_solution, full_assignment):
