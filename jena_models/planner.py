@@ -13,12 +13,12 @@ class Planner(object):
         self.set_of_differences = SetOfDifferences()
         self.planning_policy = policy
 
-    def create_plan(self, msg):
+    def create_plan(self, task):
         """ Model a temporal plan .
 
         Model a plan and instantiate a dispatcher to perform the plan
         """
-        self.base_solution.model_temporal_problem(msg.data)
+        self.base_solution.model_temporal_problem(task)
         self._ica_map_u()
         #nx.write_graphml(self.base_solution._graph, "base_solution.graphml")
         return True if (self.set_of_differences.count_valid_assignments() > 0) else False
