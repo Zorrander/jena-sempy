@@ -6,7 +6,7 @@ setup(
     description='Manipulates semantic information and offers planning capabilities.',
     author='Alexandre Angleraud',
     author_email='alexandre.angleraud@tuni.fi',
-    download_url='https://github.com/Zorrander/jena_sempy/archive/v_0.8.4.tar.gz',
+    download_url='https://github.com/Zorrander/jena_sempy/archive/v0.9.0.tar.gz',
     license='New BSD License',
     test_suite="tests",
     install_requires=[
