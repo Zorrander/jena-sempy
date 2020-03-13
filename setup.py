@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='jena_sempy',
-    version='0.8.4',
+    version='0.9.0',
     description='Manipulates semantic information and offers planning capabilities.',
     author='Alexandre Angleraud',
     author_email='alexandre.angleraud@tuni.fi',
