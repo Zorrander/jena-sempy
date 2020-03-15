@@ -1,0 +1,4 @@
+requests
+rdflib
+networkx
+matplotlib<=2-2-4
