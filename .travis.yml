@@ -1,8 +1,8 @@
 language: python
 install:
   - python setup.py install
-  - pip install codecov
+  - pip install coverage
 script:
-  - pytest
+  - coverage run -m unittest discover
 after_success:
-  - codecov
+  - bash <(curl -s https://codecov.io/bash)
