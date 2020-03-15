@@ -15,7 +15,7 @@ Reference
 
 P. Morris, N. Muscettola, and T. Vidal, "Dynamic Control Of Plans With Temporal Uncertainty".
 """
-from jena_models.constraints import TemporalConstraint
+from ..jena_models.constraints import TemporalConstraint
 
 DEFAULT_HUMAN_EXECUTION_TIME = (10, 20)
 DEFAULT_ROBOT_EXECUTION_TIME = (20, 30)
