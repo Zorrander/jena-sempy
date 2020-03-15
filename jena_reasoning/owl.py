@@ -1,7 +1,7 @@
 import json
 from rdflib import URIRef, BNode, Literal, Namespace, RDF
 from jena_com.communication import Server
-import jena_com.queries as qry
+from jena_com import queries as qry
 
 class Knowledge:
 
