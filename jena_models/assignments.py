@@ -12,7 +12,7 @@ class FullTaskAssignment(object):
         new_constraint = argv[0] if len(argv)==1 else TemporalConstraint(argv[0], argv[1], argv[2], argv[3])
         self.task_assignments.append((new_constraint, []))
 
-    def add_constraint_change(new_constraint, task_assignment):
+    def add_constraint_change(self, new_constraint, task_assignment):
         for x in self.task_assignments:
             if x[0] == task_assignment:
                 x[1].append(new_constraint)

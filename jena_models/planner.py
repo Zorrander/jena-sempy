@@ -1,3 +1,5 @@
+import os
+import csv
 from jena_models.base_solution import BaseSolution
 from jena_models.set_of_differences import SetOfDifferences
 
@@ -29,8 +31,9 @@ class Planner(object):
 
     def find_next_action(self):
         ''' Pick an event TP in the graph such that current_time is in TP's time bound '''
-        return self.base_solution.find_available_step(current_time)
-
+        # return self.base_solution.find_available_step(current_time)
+        pass
+    
     def perform_action(self):
         ''' Set TP's execution time to current_timeand add TP to S '''
         ''' Propagate the time of executionto its IMMEDIATE NEIGHBORS in the distancegraph '''
