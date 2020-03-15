@@ -1,6 +1,6 @@
 from unittest import TestCase
-from jena_com.communication import Server
-from jena_com import queries as qry
+from ..jena_com.communication import Server
+from ..jena_com import queries as qry
 
 class TestGrounding(TestCase):
 

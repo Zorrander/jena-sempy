@@ -1,7 +1,7 @@
 import rdflib
 from rdflib import Namespace, URIRef
 from rdflib.graph import Graph
-from jena_com import queries as qry
+from . import queries as qry
 from os.path import expanduser
 
 cogtuni = Namespace("http://cognitive.robotics.tut#")
