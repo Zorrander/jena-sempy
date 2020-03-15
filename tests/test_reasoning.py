@@ -1,5 +1,5 @@
 from unittest import TestCase
-from jena_reasoning.owl import Knowledge
+from ..jena_reasoning.owl import Knowledge
 from ..jena_com import queries as qry
 from rdflib import URIRef, BNode, Literal, Namespace, RDF
 
