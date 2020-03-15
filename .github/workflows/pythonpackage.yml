@@ -9,15 +9,15 @@ on:
   pull_request:
     branches: [ master ]
 
+build:
+  runs-on: ubuntu-latest
+  strategy:
+    matrix:
+      python-version: [3.6]
+      
 jobs:
-    build:
-      runs-on: ubuntu-latest
-      strategy:
-        matrix:
-          python-version: [3.6]
     run-tests:
       steps:
-      - uses: actions/checkout@v2
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v1
         with:
@@ -44,12 +44,12 @@ jobs:
           name: code-coverage-report
           path: coverage.xml
 
-  codacy-coverage-reporter:
+    codacy-coverage-reporter:
       needs: run-tests
       runs-on: ubuntu-latest
       name: codacy-coverage-reporter
       steps:
-        - name: Download math result for job 1
+        - name: Download coverage report
           uses: actions/download-artifact@v1
           with:
             name: code-coverage-report
