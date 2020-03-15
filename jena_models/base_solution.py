@@ -192,7 +192,7 @@ class BaseSolution():
             return False
 
     def graph_to_json(self):
-        filename = raw_input("Enter a file name to save the plan: ")
+        filename = input("Enter a file name to save the plan: ")
         filename = expanduser("~")+"/"+filename+".owl"
         d = json_graph.node_link_data(self._graph)  # node-link format to serialize
         # write json

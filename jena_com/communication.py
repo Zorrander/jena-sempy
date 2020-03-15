@@ -65,7 +65,7 @@ class Server:
         return found
 
     def save(self):
-        filename = raw_input("Enter a file name to save the ontology: ")
+        filename = input("Enter a file name to save the ontology: ")
         filename = expanduser("~")+"/"+filename+".owl"
         file = open(filename, "w+")
         file.write(self.g.serialize(format='xml'))
