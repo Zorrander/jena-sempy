@@ -1,3 +1,3 @@
-from jena_com.communication import Server
-from jena_reasoning.owl import Knowledge
-from jena_models.planner import Planner
+import jena_com
+import jena_reasoning
+import jena_models
