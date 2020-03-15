@@ -11,7 +11,7 @@ namespaces = dict(cogtuni=cogtuni, rdfs=rdfs, cogrobtut=cogtuni)
 class Server:
     def __init__(self, host="onto-server-tuni.herokuapp.com", port="3030", format="n3"):
         self.g = Graph()
-        self.g.parse("http://"+host+":"+port+"/ds/get", format=format)
+        self.g.parse("http://"+host+":"+"/ds/get", format=format)
 
     def process_uri(self, uri):
         uri_py = uri
