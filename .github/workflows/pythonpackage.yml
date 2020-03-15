@@ -10,8 +10,16 @@ on:
     branches: [ master ]
 
 
+
 jobs:
+
     run-tests:
+      build:
+        runs-on: ubuntu-latest
+        strategy:
+          matrix:
+            python-version: [3.6]
+
       steps:
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v1
