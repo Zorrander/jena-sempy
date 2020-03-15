@@ -9,12 +9,7 @@ on:
   pull_request:
     branches: [ master ]
 
-build:
-  runs-on: ubuntu-latest
-  strategy:
-    matrix:
-      python-version: [3.6]
-      
+
 jobs:
     run-tests:
       steps:
