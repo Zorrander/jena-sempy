@@ -14,7 +14,6 @@ setup(
      'rdflib',
      'networkx',
      #'matplotlib',
-     'secrets',
      'matplotlib<=2-2-4'
     ],
     packages=[
