@@ -9,10 +9,9 @@ rdfs    = Namespace("http://www.w3.org/2000/01/rdf-schema#")
 namespaces = dict(cogtuni=cogtuni, rdfs=rdfs, cogrobtut=cogtuni)
 
 class Server:
-http://host:port/ds
-    def __init__(self, ip="onto-server-tuni.herokuapp.com", port="3030", format="n3"):
+    def __init__(self, host="onto-server-tuni.herokuapp.com", port="3030", format="n3"):
         self.g = Graph()
-        self.g.parse("http://"+ip+":"+port+"/ds/get", format=format)
+        self.g.parse("http://"+host+":"+port+"/ds/get", format=format)
 
     def process_uri(self, uri):
         uri_py = uri
