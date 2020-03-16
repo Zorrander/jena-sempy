@@ -24,21 +24,24 @@ class Planner(object):
         self.base_solution.relax_network()
         self.base_solution.transform_dispatchable_graph()
 
+    def init_time(self):
+        self.counter = 3
 
-    def apply_timestamp(self):
-        # Propagate it to its immediate neighbors
-        pass
+    def apply_timestamp(self, action):
+        ''' Set TP's execution time to current_timeand add TP to S '''
+        ''' Propagate the time of executionto its IMMEDIATE NEIGHBORS in the distancegraph '''
+        ''' Put in A all events TPx such that allnegative edges starting from TPx have adestination that is already in S; '''
+        print("{} {}".format(action, self.counter))
 
     def find_next_action(self):
         ''' Pick an event TP in the graph such that current_time is in TP's time bound '''
         # return self.base_solution.find_available_step(current_time)
-        pass
+        return "Action"
 
-    def perform_action(self):
-        ''' Set TP's execution time to current_timeand add TP to S '''
-        ''' Propagate the time of executionto its IMMEDIATE NEIGHBORS in the distancegraph '''
-        ''' Put in A all events TPx such that allnegative edges starting from TPx have adestination that is already in S; '''
-        pass
+    def find_available_steps(self):
+        self.counter -= 1
+        if self.counter>0:
+            return "Steps"
 
     def export_data(self):
         with open(os.path.join("./", self.planning_policy.name + '.csv'), mode='w') as working_times:
