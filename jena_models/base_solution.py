@@ -3,7 +3,7 @@ import json
 import networkx as nx
 from os.path import expanduser
 from networkx.readwrite import json_graph
-from ..jena_reasoning.owl import Knowledge
+from jena_reasoning.owl import Knowledge
 import matplotlib.pyplot as plt
 
 DEFAULT_HUMAN_EXECUTION_TIME = (10, 20)

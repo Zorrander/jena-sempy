@@ -1,7 +1,7 @@
-from ..jena_models.policies import Policy
-from ..jena_models.constraints import TemporalConstraint
-from ..jena_models.assignments import FullTaskAssignment
-from ..jena_models.update_rules import dynamic_backpropagation_rule_I, dynamic_backpropagation_rule_II
+from .policies import Policy
+from .constraints import TemporalConstraint
+from .assignments import FullTaskAssignment
+from .update_rules import dynamic_backpropagation_rule_I, dynamic_backpropagation_rule_II
 
 class SetOfDifferences(object):
 

@@ -1,7 +1,7 @@
 import os
 import csv
-from ..jena_models.base_solution import BaseSolution
-from ..jena_models.set_of_differences import SetOfDifferences
+from .base_solution import BaseSolution
+from .set_of_differences import SetOfDifferences
 
 class Planner(object):
     """Compile a plan.

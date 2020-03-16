@@ -1,7 +1,7 @@
 
 from rdflib import Namespace
 from unittest import TestCase
-from ..jena_com.communication import Server
+from jena_com.communication import Server
 from rdflib import RDF, RDFS, OWL
 
 cogtuni = Namespace("http://cognitive.robotics.tut#")
