@@ -1,78 +1,38 @@
-import rdflib
-from rdflib import Namespace, URIRef
-from rdflib.graph import Graph
+from SPARQLWrapper import SPARQLWrapper, JSON, POST, DIGEST
 from . import queries as qry
-from os.path import expanduser
-
-cogtuni = Namespace("http://cognitive.robotics.tut#")
-rdfs    = Namespace("http://www.w3.org/2000/01/rdf-schema#")
-namespaces = dict(cogtuni=cogtuni, rdfs=rdfs, cogrobtut=cogtuni)
 
 class Server:
-    def __init__(self, host="onto-server-tuni.herokuapp.com", port="3030", format="n3"):
-        self.g = Graph()
-        self.g.parse("http://"+host+"/ds/get", format=format)
+    def __init__(self, host="onto-server-tuni.herokuapp.com", dataset="Panda"):
+        self.query_sparql_store = SPARQLWrapper("http://"+host+"/"+ dataset +"/sparql")  # serviceQuery
+        self.update_sparql_store = SPARQLWrapper("http://"+host+"/"+ dataset +"/update")  # updateQuery
 
-    def process_uri(self, uri):
-        uri_py = uri
-        if isinstance(uri_py, rdflib.term.URIRef):
-            uri_py = uri.toPython()
-        if "#" in uri_py:
-            uri_py = uri_py.split("#")[1]
-        return uri_py.encode('ascii', 'ignore')
+    def select_operation(self, query):
+        ''' SELECT query. a SPARQL Results Document in XML, JSON, or CSV/TSV format. '''
+        try:
+            self.query_sparql_store.setReturnFormat(JSON)
+            self.query_sparql_store.setQuery(query)
+            raw_result = self.query_sparql_store.query().convert()
+            return [x for x in raw_result["results"]["bindings"]]
+        except:
+            print("Could not complete SELECT operation")
 
-    def process_result(self, result):
-        rows = [x for x in result]
-        if len(rows)==1:
-            return rows[0]
-            # [0].toPython()
-            #  .split("#")[1]
-        else:
-            return rows
+    def update_operation(self, query):
+        try:
+            self.update_sparql_store.setMethod(POST)
+            self.update_sparql_store.setQuery(query)
+            results = self.update_sparql_store.query()
+            return results.response.read()
+        except:
+            print("Could not complete UPDATE operation")
 
-    def query(self, query):
-        SPARQLResult = self.g.query(query, initNs=namespaces)
-        return self.process_result(SPARQLResult)
+    def ask_operation(self, sparql):
+        ''' ASK query. a SPARQL Results Document in XML, JSON, or CSV/TSV format.'''
+        pass
 
-    def fetch_all(self):
-        query = qry.select_all()
-        return self.query(query)
+    def construct_operation(self, triples):
+        ''' an RDF graph serialized, for example, in the RDF/XML syntax '''
+        pass
 
-    def create(self, subject, predicate, object):
-        subject   =  URIRef(subject) if not isinstance(subject, rdflib.term.URIRef) else subject
-        predicate =  URIRef(predicate) if not isinstance(predicate, rdflib.term.URIRef) else predicate
-        object    =  URIRef(object) if not isinstance(object, rdflib.term.URIRef) else object
-        self.g.add( (subject, predicate, object) )
-
-    def read(self, subject):
-        if not "#" in subject:
-            subject = cogtuni[subject]
-        gen = self.g.predicate_objects(subject)
-        return [ (self.process_uri(pred), self.process_uri(obj)) for pred, obj in gen ]
-
-    def find_namespace(self, entity):
-        found = False
-        for triple in self.fetch_all():
-            for uri_ref in triple:
-                if isinstance(uri_ref, rdflib.term.URIRef) and "#" in uri_ref:
-                    uri_py = uri_ref.toPython()
-                    if uri_py.split("#")[1] == entity:
-                        found = uri_py.split("#")[0]
-                        break
-                if found:
-                    break
-        return found
-
-    def save(self):
-        filename = input("Enter a file name to save the ontology: ")
-        filename = expanduser("~")+"/"+filename+".owl"
-        file = open(filename, "w+")
-        file.write(self.g.serialize(format='xml'))
-
-    '''
-    <rdf:RDF xml:base="http://www.w3.org/2002/07/owl">
-    <Ontology rdf:about="http://cognitive.robotics.tut#"/>
-
-
-    </rdf:RDF>
-    '''
+    def describe_operation(self, data):
+        '''  an RDF graph serialized, for example, in the RDF/XML syntax '''
+        pass

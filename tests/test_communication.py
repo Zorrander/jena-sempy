@@ -1,34 +1,37 @@
-
-from rdflib import Namespace
 from unittest import TestCase
 from jena_com.communication import Server
-from rdflib import RDF, RDFS, OWL
 
-cogtuni = Namespace("http://cognitive.robotics.tut#")
+select_persons = """
+    PREFIX ns: <http://www.example.org/ns#>
+    PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+    SELECT *
+    WHERE {
+        ?s rdf:type ns:Person .
+    }
+"""
+select_someone_who_knows = """
+    PREFIX ns: <http://www.example.org/ns#>
+    SELECT *
+    WHERE {
+        ?s ns:knows ?o .
+    }
+"""
 
 class TestCommunication(TestCase):
 
-    def test_find_namespace(self):
-        reasoner = Server()
-        test = reasoner.find_namespace("FrankaDictionary")
-        self.assertTrue(test == "http://cognitive.robotics.tut")
+    def test_select(self):
+        ontology_server = Server()
+        results = ontology_server.select_operation(select_persons)
+        self.assertTrue(results[0]["s"]["value"] == "http://www.example.org/ns#Don_Quijote")
 
-    def test_find_subject(self):
-        reasoner = Server()
-        test = True if (cogtuni.Skill in reasoner.g.subjects()) else False
-        self.assertTrue(test == True)
-
-    def test_find_predicate(self):
-        reasoner = Server()
-        test = True if (RDF.type in reasoner.g.predicates()) else False
-        self.assertTrue(test == True)
-
-    def test_find_object(self):
-        reasoner = Server()
-        test = True if (cogtuni.Sensor in reasoner.g.objects()) else False
-        self.assertTrue(test == True)
-
-    def test_read_subject(self):
-        reasoner = Server()
-        p_o = reasoner.read("FrankaDictionary")
-        self.assertTrue(('type', 'NamedIndividual') in p_o)
+    def test_update(self):
+        ontology_server = Server()
+        results = ontology_server.update_operation("""
+            PREFIX ns: <http://www.example.org/ns#>
+            INSERT DATA {
+                ns:Don_Quijote ns:knows ns:Rocinante .
+            }
+        """)
+        result = True if not results==None else False
+        self.assertTrue(result)

@@ -10,11 +10,8 @@ setup(
     license='New BSD License',
     test_suite="tests",
     install_requires=[
-     'requests',
-     'rdflib',
-     'networkx',
-     #'matplotlib',
-     'matplotlib<=2-2-4'
+     'sparqlwrapper',
+     'networkx'
     ],
     packages=[
      'jena_com',

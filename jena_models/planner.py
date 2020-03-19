@@ -39,9 +39,12 @@ class Planner(object):
         return "Action"
 
     def find_available_steps(self):
-        self.counter -= 1
+        self.counter = self.counter-1
         if self.counter>0:
             return "Steps"
+
+    def print_plan(self):
+        self.base_solution.print_graph()
 
     def export_data(self):
         with open(os.path.join("./", self.planning_policy.name + '.csv'), mode='w') as working_times:
