@@ -11,7 +11,8 @@ setup(
     test_suite="tests",
     install_requires=[
      'sparqlwrapper',
-     'networkx'
+     'networkx',
+     'more_itertools'
     ],
     packages=[
      'jena_com',
