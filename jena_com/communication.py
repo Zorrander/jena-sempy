@@ -13,7 +13,7 @@ modifiers= [
 ]
 '''
 
-class Server:
+class FusekiServer:
     def __init__(self, host="onto-server-tuni.herokuapp.com", dataset="Panda"):
         self.query_sparql_store = SPARQLWrapper("http://"+host+"/"+ dataset +"/sparql")  # serviceQuery
         self.update_sparql_store = SPARQLWrapper("http://"+host+"/"+ dataset +"/update")  # updateQuery
