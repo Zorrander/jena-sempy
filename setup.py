@@ -16,7 +16,6 @@ setup(
     ],
     packages=[
      'jena_com',
-     'jena_reasoning',
      'jena_models'
     ]
 )
