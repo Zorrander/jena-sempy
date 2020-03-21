@@ -1,4 +1,4 @@
-from SPARQLWrapper import SPARQLWrapper, JSON, POST, TURTLE
+from SPARQLWrapper import SPARQLWrapper, JSON, POST, TURTLE, XML
 from more_itertools import grouper
 from . import queries as qry
 
@@ -52,6 +52,7 @@ class FusekiServer:
     def describe_operation(self, query):
         '''  Returns an RDF graph that describes the resources found. '''
         try:
+            self.query_sparql_store.setReturnFormat(XML)
             self.query_sparql_store.setQuery(query)
             results = self.query_sparql_store.query().convert()
             str_result = results.serialize(format='nt')
