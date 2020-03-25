@@ -19,6 +19,21 @@ class FusekiServer:
         self.update_sparql_store = SPARQLWrapper("http://"+host+"/"+ dataset +"/update")  # updateQuery
 
 
+    def generate_instance_uri(self, class_name):
+        query = """
+            SELECT ?s
+            WHERE {
+                ?s rdf:type cogrob:"""+class_name+"""
+            }
+        """
+        instances = self.select_operation(query)
+        index = max([inst[-1] for inst in instances]) if instances else 0
+        return "cogrob:"+ class_name[0].lower() + class_name[1:]+"Ind"+str(index)
+
+    def create_instance(self, class_name):
+        uri = self.generate_instance_uri(class_name)
+        return self.add_data(uri, "rdf:type", class_name)
+
     def select_operation(self, query):
         ''' Returns variables bound in a query pattern match '''
         try:
@@ -27,7 +42,7 @@ class FusekiServer:
             dict_result = self.query_sparql_store.query().convert()
             return [x for x in dict_result["results"]["bindings"]]
         except:
-            print("Could not complete SELECT operation")
+            print("Could not complete {}".format(query))
 
     def update_operation(self, query):
         ''' DELETE or INSERT operations '''
