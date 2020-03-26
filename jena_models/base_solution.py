@@ -43,7 +43,7 @@ class BaseSolution():
         elif method == "chordal":
             pass
 
-    def model_temporal_problem(self, skill):
+    def model_temporal_problem(self,  action_sem, object_sem):
         """ Converts the problem into an STN
 
         Translate the lists of steps and their constraints into timepoints and links between them.
@@ -100,12 +100,10 @@ class BaseSolution():
         self._graph.nodes[event]['is_done'] = True
 
 
-    def find_available_step(self, current_time):
+    def find_available_steps(self, current_time):
         """Get the available events in the network."""
-        for step, data in self._graph.nodes.data():
-            if not data['is_done']:
-                return step
-
+        return [step for step, data in self._graph.nodes.data() if not data['is_done']]
+        
     def find_predecessor_graph(self):
         pass
 
