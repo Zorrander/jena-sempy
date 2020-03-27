@@ -3,7 +3,6 @@ import json
 import networkx as nx
 from os.path import expanduser
 from networkx.readwrite import json_graph
-from jena_reasoning.owl import Knowledge
 import matplotlib.pyplot as plt
 
 DEFAULT_HUMAN_EXECUTION_TIME = (10, 20)
@@ -11,7 +10,6 @@ DEFAULT_ROBOT_EXECUTION_TIME = (20, 30)
 
 class BaseSolution():
     def __init__(self):
-        self.reasoner = Knowledge()
         self._graph = nx.DiGraph()
 
     def relax_network(self):
@@ -43,54 +41,13 @@ class BaseSolution():
         elif method == "chordal":
             pass
 
-    def model_temporal_problem(self,  action_sem, object_sem):
+    def model_temporal_problem(self, steps_sem, object_sem):
         """ Converts the problem into an STN
 
         Translate the lists of steps and their constraints into timepoints and links between them.
         """
-        list_steps = self.reasoner.retrieve_assembly_steps(skill)
-        list_steps = [x[0].toPython() for x in list_steps]
-        list_assemblies = []
-
-        for assy_step in list_steps:
-            list_assemblies.append(self.reasoner.retrieve_links(assy_step))
-
-        step = 0
-        while(list_assemblies):
-            less_constrained = []
-            min = 10
-
-            for x in list_assemblies:
-                if len(x) < min:
-                    less_constrained = []
-                    less_constrained.append(x)
-                    min = len(x)
-                elif len(x) == min:
-                    less_constrained.append(x)
-            if not less_constrained:
-                min=min-1
-            else:
-                step=step+1
-                # print("Round of less constrained: {}".format(less_constrained))
-                list_assemblies = [item for item in list_assemblies if item not in less_constrained]
-                # print("Round of assemblies: {}".format(list_assemblies))
-
-                for list_link in less_constrained:
-                    edges = self.reasoner.deduce_assembly_logic(list_link)
-                    # print("Edges {}".format(edges))
-                    if not isinstance(edges[0], tuple):
-                        self.add_event(peg = edges[0], hole = edges[1], step=step)
-                    else:
-                        self.add_event(peg = (edges[0][0], edges[0][1]), hole = "", step=step)
-
-
-        for id_node_a, data_node_a in list(self._graph.nodes.data()):
-            for id_node_b, data_node_b in list(self._graph.nodes.data()):
-                # print("Round of nodes: {},{} and {},{}".format(id_node_a, data_node_a, id_node_b, data_node_b))
-                if data_node_a['step'] > data_node_b['step']:
-                    self.set_relation(id_node_a, id_node_b, 'temporal_constraint', (DEFAULT_HUMAN_EXECUTION_TIME, DEFAULT_ROBOT_EXECUTION_TIME))
-
-        return list_steps
+        for step in steps_sem:
+            self.add_event(step)
 
     def timepoints(self):
         """Get the timepoints of the network."""
@@ -103,7 +60,7 @@ class BaseSolution():
     def find_available_steps(self, current_time):
         """Get the available events in the network."""
         return [step for step, data in self._graph.nodes.data() if not data['is_done']]
-        
+
     def find_predecessor_graph(self):
         pass
 
@@ -117,10 +74,10 @@ class BaseSolution():
         """Return the value for an attribute of the node 'event' if data. All the attributes otherwise."""
         return self._graph.nodes(data=data)[event] if data else self._graph.nodes(data=True)[event]
 
-    def add_event(self, peg, hole, step, is_done=False):
+    def add_event(self, step, is_done=False):
         """Create a new node in the graph."""
         id = nx.number_of_nodes(self._graph)+1
-        self._graph.add_node(id, step=step, peg=peg, hole=hole, is_done=is_done, is_claimed=False)
+        self._graph.add_node(id, hole=hole, is_done=is_done, is_claimed=False)
         return id
 
     def set_event(self, name, data, value):
