@@ -1,4 +1,2 @@
-requests
-rdflib
-networkx
-matplotlib<=2-2-4
+sparqlwrapper
+more_itertools
