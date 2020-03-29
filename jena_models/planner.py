@@ -15,13 +15,17 @@ class Planner(object):
         #self.set_of_differences = SetOfDifferences()
         self.planning_policy = policy
 
-    def create_plan(self, action_sem, object_sem):
+    def create_plan(self, sem_collection):
         """ Model a temporal plan """
-        self.base_solution.model_temporal_problem(action_sem, object_sem)
-        self.base_solution.relax_network()
-        self.base_solution.transform_dispatchable_graph()
-        return self.base_solution
-
+        try:
+            self.base_solution.model_temporal_problem(sem_collection)
+            self.print_plan()
+            self.base_solution.relax_network()
+            self.base_solution.transform_dispatchable_graph()
+            return self.base_solution
+        except Exception as e:
+            print(e)
+            
     def print_plan(self):
         self.base_solution.print_graph()
 

@@ -41,13 +41,14 @@ class BaseSolution():
         elif method == "chordal":
             pass
 
-    def model_temporal_problem(self, steps_sem, object_sem):
+    def model_temporal_problem(self, sem_collection):
         """ Converts the problem into an STN
 
         Translate the lists of steps and their constraints into timepoints and links between them.
         """
-        for step in steps_sem:
-            self.add_event(step)
+        for subject, predicate, object in sem_collection:
+            if predicate=="<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>" and object == "<http://onto-server-tuni.herokuapp.com/Panda#ManipulationTask>":
+                self.add_event(subject)
 
     def timepoints(self):
         """Get the timepoints of the network."""

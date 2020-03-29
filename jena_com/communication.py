@@ -29,16 +29,22 @@ class FusekiServer:
 
 
     def generate_instance_uri(self, class_name):
-        query = """
-            SELECT ?s
-            WHERE {
-                ?s rdf:type cogrob:"""+class_name+""" .
-            }
-        """
-        instances = self.select_operation(query)
-        index = max([inst['s']['value'][-1] for inst in instances]) if instances else -1
-        index = str(int(index)+1)
-        return "cogrob:"+ class_name[0].lower() + class_name[1:]+"Ind"+index
+        try:
+            query = """
+                SELECT ?s
+                WHERE {
+                    ?s rdf:type cogrob:"""+class_name+""" .
+                }
+            """
+            instances = self.select_operation(query)
+            print(instances)
+            index = max([inst['s']['value'][-1] for inst in instances]) if instances else -1
+            print("INDEX {}".format(index))
+            index = str(int(index)+1)
+            print("Index {} of class {}".format(index, class_name))
+            return "cogrob:"+ class_name[0].lower() + class_name[1:]+"Ind"+index
+        except Exception as e:
+            print(e)
 
     def create_instance(self, class_name):
         subject = self.generate_instance_uri(class_name)
