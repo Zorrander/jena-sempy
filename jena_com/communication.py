@@ -58,10 +58,12 @@ class FusekiServer:
         try:
             self.query_sparql_store.setReturnFormat(JSON)
             self.query_sparql_store.setQuery(self.concatenate_prefix(query))
+            print(self.concatenate_prefix(query))
             dict_result = self.query_sparql_store.query().convert()
+            print(dict_result)
             return [x for x in dict_result["results"]["bindings"]]
-        except:
-            print("Could not complete {}".format(query))
+        except Exception as e:
+            print(e)
 
     def update_operation(self, query):
         ''' DELETE or INSERT operations '''
@@ -99,4 +101,13 @@ class FusekiServer:
 
     def construct_operation(self, query):
         ''' Returns an RDF graph constructed by substituting variables in a set of triple templates. '''
-        pass
+        try:
+            self.query_sparql_store.setReturnFormat(XML)
+            self.query_sparql_store.setQuery(self.concatenate_prefix(query))
+            results = self.query_sparql_store.query().convert()
+            str_result = results.serialize(format='nt')
+            uris = str_result.split(' ')
+            clean_uris = [x if not x[0]=='.' else x[2:] for x in uris]
+            return list(grouper(3, clean_uris))[:-1]
+        except Exception as e:
+            print(e)
