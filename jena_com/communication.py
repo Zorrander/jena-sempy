@@ -68,13 +68,14 @@ class FusekiServer:
     def update_operation(self, query):
         ''' DELETE or INSERT operations '''
         try:
+            print(query)
             self.update_sparql_store.setMethod(POST)
             self.update_sparql_store.setQuery(self.concatenate_prefix(query))
             results = self.update_sparql_store.query()
             #return results.response.read()
             return True
-        except:
-            print("Could not complete UPDATE operation")
+        except Exception as e:
+            print(e)
 
     def ask_operation(self, query):
         ''' Returns a boolean indicating whether a query pattern matches or not. '''
